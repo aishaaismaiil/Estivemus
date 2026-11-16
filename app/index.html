@@ -713,16 +713,66 @@ document.addEventListener("click",async e=>{const el=e.target.closest("[data-act
 });
 
 /* ---------- boot ---------- */
+const SUPA_URL="https://ygpntqsliqlpqefdlvcj.supabase.co";
+const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlncG50cXNsaXFscHFlZmRsdmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ4NjU4MjgsImV4cCI6MjExMDQ0MTgyOH0.EB2R6cd0KZX9s9SxKOBMHj5RfIqZrbwPypCOzKQnAKw";
+function loadScript(src){return new Promise((res,rej)=>{const e=document.createElement("script");e.src=src;e.onload=res;e.onerror=rej;document.head.appendChild(e)})}
+const isObj=x=>x&&typeof x==="object"&&!Array.isArray(x);
+function dmerge(a,b){const o=Object.assign({},a);for(const k of Object.keys(b)){o[k]=isObj(b[k])&&isObj(o[k])?dmerge(o[k],b[k]):b[k]}return o}
+/* camada de dados sobre o Supabase, com a mesma API que a app já usa */
+function makeSupaDb(sb,uid){
+  const subs=[];const sp=p=>{const i=p.lastIndexOf("/");return [p.slice(0,i),p.slice(i+1)]};
+  const fail=r=>{if(r.error){const e=new Error(r.error.message);e.code="invalid_argument";throw e}return r};
+  const snapC=rows=>({docs:rows.map(r=>({id:r.id,data:()=>r.data}))});
+  const snapD=r=>({exists:!!r,data:()=>r?r.data:undefined});
+  async function readCol(col){
+    const rows=fail(await sb.from("docs").select("id,data").eq("col",col)).data||[];
+    if(col==="profiles"){const cs=fail(await sb.from("docs").select("id,data").eq("col","contacts")).data||[];const m={};cs.forEach(c=>m[c.id]=(c.data||{}).contact||"");
+      rows.forEach(r=>{r.data=Object.assign({},r.data,{contact:m[r.id]||""})})}
+    return rows}
+  async function readDoc(p){const [c,i]=sp(p);const r=fail(await sb.from("docs").select("id,data").eq("col",c).eq("id",i).maybeSingle()).data;return r}
+  async function put(p,data){const [c,i]=sp(p);fail(await sb.from("docs").upsert({col:c,id:i,owner:uid,data},{onConflict:"col,id"}))}
+  const api={
+    doc(p){return{
+      async set(data){if(p.startsWith("profiles/")){const {contact,...rest}=data;await put("contacts/"+p.split("/")[1],{contact:contact||""});await put(p,rest)}else await put(p,data);kick()},
+      async update(patch){const r=await readDoc(p);await put(p,dmerge(r?r.data:{},patch));kick()},
+      async delete(){const [c,i]=sp(p);fail(await sb.from("docs").delete().eq("col",c).eq("id",i));if(c==="profiles")await sb.from("docs").delete().eq("col","contacts").eq("id",i);kick()},
+      async get(){return snapD(await readDoc(p))},
+      onSnapshot(cb,err){const f=async()=>{try{cb(snapD(await readDoc(p)))}catch(e){err&&err(e)}};subs.push(f);f();return()=>{subs.splice(subs.indexOf(f),1)}}}},
+    collection(c){return{
+      async add(data){const id="r"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);await put(c+"/"+id,data)},
+      onSnapshot(cb,err){const f=async()=>{try{cb(snapC(await readCol(c)))}catch(e){err&&err(e)}};subs.push(f);f();return()=>{subs.splice(subs.indexOf(f),1)}}}}
+  };
+  let kt=0;function kick(){clearTimeout(kt);kt=setTimeout(()=>subs.forEach(f=>f()),600)}
+  setInterval(()=>{if(!document.hidden)subs.forEach(f=>f())},12000);
+  return api}
+function loginScreen(sb){return new Promise(res=>{
+  const o=document.createElement("div");o.style.cssText="position:fixed;inset:0;z-index:99;background:#FBF6EA;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto";
+  o.innerHTML=`<div style="max-width:380px;width:100%"><h1 style="font-family:Fraunces,Georgia,serif;font-size:34px;margin:0 0 4px;color:#3B2A20">Estive<span style="color:#B5472B">mus</span></h1><p style="font-weight:700;color:#B5472B;margin:0 0 18px">Reencontra quem também esteve.</p>
+  <div class="card"><label>Email</label><input id="lg_e" type="email" autocomplete="email"><label style="margin-top:10px;display:block">Palavra-passe (mín. 6)</label><input id="lg_p" type="password" autocomplete="current-password">
+  <div id="lg_m" class="err" style="margin-top:10px"></div>
+  <button class="btn" id="lg_in" style="width:100%;margin-top:12px">Entrar</button>
+  <button class="btn ghost" id="lg_up" style="width:100%;margin-top:8px">Criar conta</button></div></div>`;
+  document.body.appendChild(o);const m=t=>o.querySelector("#lg_m").textContent=t;
+  const go=async up=>{const email=o.querySelector("#lg_e").value.trim(),password=o.querySelector("#lg_p").value;if(!email||password.length<6)return m("Indica o email e uma palavra-passe com 6 ou mais caracteres.");
+    m("A processar…");const r=up?await sb.auth.signUp({email,password}):await sb.auth.signInWithPassword({email,password});
+    if(r.error)return m(r.error.message==="Invalid login credentials"?"Email ou palavra-passe errados.":r.error.message);
+    if(!r.data.session)return m("Conta criada. Confirma o email que enviámos e depois entra.");o.remove();res(r.data.session)};
+  o.querySelector("#lg_in").onclick=()=>go(false);o.querySelector("#lg_up").onclick=()=>go(true)})}
 (async function boot(){
   render();
-  if(typeof claude==="undefined"||!claude.use){S.fatal="Abre esta app no claude.ai com a tua conta para guardar e partilhar dados.";render();return}
   const timer=setTimeout(()=>{S.slow=true;sched()},10000);
   let db=null,user=null;
-  try{db=await claude.use("db");user=await claude.use("user")}catch(_){}
-  if(!db||!user){clearTimeout(timer);S.fatal="Para usar a app precisas de ter sessão iniciada no claude.ai e acesso a esta página. Pede ao dono para te partilhar como Contribuidor.";render();return}
-  S.db=db;try{S.assets=await claude.use("assets")}catch(_){}
-  S.uid=await user.id();try{S.meInfo=await user.me()}catch(_){}
-  try{const c=await user.can("data.write");S.canWrite=c!==false}catch(_){}
+  if(typeof claude!=="undefined"&&claude.use){
+    try{db=await claude.use("db");user=await claude.use("user")}catch(_){}
+    if(!db||!user){clearTimeout(timer);S.fatal="Para usar a app precisas de ter sessão iniciada no claude.ai e acesso a esta página. Pede ao dono para te partilhar como Contribuidor.";render();return}
+    S.db=db;try{S.assets=await claude.use("assets")}catch(_){}
+    S.uid=await user.id();try{S.meInfo=await user.me()}catch(_){}
+    try{const c=await user.can("data.write");S.canWrite=c!==false}catch(_){}
+  }else{
+    let sb;try{await loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2");sb=window.supabase.createClient(SUPA_URL,SUPA_KEY)}catch(_){clearTimeout(timer);S.fatal="Não foi possível ligar ao servidor. Verifica a ligação e recarrega.";render();return}
+    let ses=(await sb.auth.getSession()).data.session;if(!ses)ses=await loginScreen(sb);
+    S.uid=ses.user.id;S.meInfo={name:"",email:ses.user.email};S.db=db=makeSupaDb(sb,S.uid);S.sb=sb;
+  }
   if(!S.uid){clearTimeout(timer);S.fatal="Não foi possível identificar a tua conta.";render();return}
   const onErr=e=>{S.err=e&&e.code;if(e&&e.code==="revoked")S.fatal="O teu acesso a esta app foi retirado.";sched()};
   const first=()=>{clearTimeout(timer);S.slow=false};
