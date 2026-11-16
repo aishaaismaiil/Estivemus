@@ -15,9 +15,9 @@ create table institutions (
   id uuid primary key default gen_random_uuid(),
   name text not null, municipality text, country text not null default 'PT',
   created_by uuid references profiles(id) on delete set null,
-  created_at timestamptz not null default now(),
-  unique (lower(name), lower(coalesce(municipality,'')), country)
+  created_at timestamptz not null default now()
 );
+create unique index institutions_unique on institutions (lower(name), lower(coalesce(municipality,'')), country);
 create table education (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references profiles(id) on delete cascade,
