@@ -15,6 +15,13 @@ Idiomas / Languages / Idiomas: **PT-PT · EN · ES**
 - `supabase/schema.sql`: esquema de base de dados Postgres (Supabase) com regras de acesso por linha (RLS), para o lançamento público. **Ainda não foi executado nem testado.**
 - Falta, para lançar ao público: ligar a app a uma base de dados pública (ver abaixo), login (e-mail ou Google), termos e política de privacidade, e domínio.
 
+## Estrutura
+
+- `index.html`, `privacidade.html`, `termos.html`, `site.css`: **modo site** (público).
+- `app/`: **modo aplicação** (`manifest.webmanifest` + ícones: instalável no telemóvel).
+- `supabase/docs.sql` + `supabase/security.sql`: base de dados e regras de acesso.
+- `SECURITY.md`: lista de segurança. `DESIGN.md`: dicas para o site não parecer feito por IA. `handoff.md`: ponto da situação.
+
 ## Funcionalidades
 
 - Perfil com foto, nome e percurso: creche, pré-escolar, 1.º/2.º/3.º ciclo, secundário e superior, com anos e turma.
