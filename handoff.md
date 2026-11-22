@@ -11,6 +11,13 @@ App e site para reencontrar antigos colegas de creche, escola e universidade (po
 ## Ficheiros em que trabalhei
 `index.html`, `privacidade.html`, `termos.html`, `site.css`, `app/index.html`, `app/manifest.webmanifest`, `app/icons/*`, `supabase/security.sql`, `SECURITY.md`, `DESIGN.md`, `README.md`, `handoff.md`
 
+## Atualização (22 nov, tarde)
+- Região do Supabase confirmada: UE (Irlanda). Projeto Estivemus: `ygpntqsliqlpqefdlvcj`. A base tem só 4 linhas de teste e `docs.sql` já foi aplicado.
+- Teste do `security.sql` em modo "ensaio" (sem gravar) ficou **à espera de confirmação do utilizador no Supabase**; ainda não foi aplicado.
+- App: toque duplo bloqueado, botão voltar fecha janelas (e protege o perfil em edição), teclado sobe a caixa de texto, `color-scheme: light`.
+- Site: uma ação principal no topo ("Criar conta"); "Já tenho conta" passou a link.
+- Pesquisa: não encontrei app igual em Portugal; marca "Estivemus" sem resultados óbvios (falta consulta oficial INPI/EUIPO). Google Play: conta pessoal nova precisa de 12 testadores durante 14 dias.
+
 ## O que mudou nesta sessão
 - Site público novo (antes `index.html` só redirecionava) + política de privacidade e termos em PT-PT.
 - App: palavra-passe mín. 8, links para termos/privacidade, CSP no modo web, "Descarregar os meus dados", apagar conta também apaga o email de login (função `delete_my_account`), convidar partilha a página inicial, meta de app instalável, `noindex`.

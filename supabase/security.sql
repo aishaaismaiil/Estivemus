@@ -51,7 +51,7 @@ create policy docs_select on docs for select to authenticated using (
 );
 
 -- 4) Escrita: um não-dono só pode mexer no que lhe diz respeito (o próprio voto, as marcações que fez ou que lhe fazem a ele)
-create or replace function docs_guard_update() returns trigger language plpgsql as $$
+create or replace function docs_guard_update() returns trigger language plpgsql set search_path = public as $$
 declare
   me text := auth.uid()::text;
   ov jsonb; nv jsonb; ot jsonb; nt jsonb; k text;
@@ -122,3 +122,12 @@ begin
 end $$;
 revoke all on function delete_my_account() from public, anon;
 grant execute on function delete_my_account() to authenticated;
+
+-- 6) Funções auxiliares: só utilizadores com sessão (anónimos não podem chamá-las pela API)
+drop function if exists docs_keep_owner();
+revoke all on function docs_mutual(text) from public, anon;
+grant execute on function docs_mutual(text) to authenticated;
+revoke all on function docs_shares_inst(text, text) from public, anon;
+grant execute on function docs_shares_inst(text, text) to authenticated;
+revoke all on function docs_in_inst(text) from public, anon;
+grant execute on function docs_in_inst(text) to authenticated;

@@ -2,7 +2,8 @@
 <html lang="pt-PT">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="color-scheme" content="light">
 <meta name="theme-color" content="#B5472B">
 <meta name="robots" content="noindex">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -603,8 +604,14 @@ function viewMe(){const p=meP();const t=(k,l,d)=>`<div class="tog"><div><b>${l}<
   ${S.sb?`<button class="btn ghost full" data-act="logout" style="margin-bottom:10px">Terminar sessão</button>`:""}<button class="btn ghost full" data-act="export">${ic("copy",18)} Descarregar os meus dados</button><button class="btn danger full" data-act="delacc">${ic("trash",18)} Apagar a minha conta</button><p class="small" style="text-align:center;margin-top:18px"><a href="../privacidade.html" target="_blank" rel="noopener">Política de privacidade</a> · <a href="../termos.html" target="_blank" rel="noopener">Termos</a></p>`}
 
 /* ---------- sheets ---------- */
-function openSheet(id,html){const s=$("#"+id);s.innerHTML=`<div class="panel" role="dialog" aria-modal="true">${html}</div>`;s.hidden=false}
-function closeSheet(id){const s=$("#"+id);s.hidden=true;s.innerHTML=""}
+let _hs=0,_skip=0;
+function openSheet(id,html){const s=$("#"+id);const was=s.hidden;s.innerHTML=`<div class="panel" role="dialog" aria-modal="true">${html}</div>`;s.hidden=false;if(was){try{history.pushState({sh:id},"");_hs++}catch(_){}}}
+function hideSheet(id){const s=$("#"+id);s.hidden=true;s.innerHTML=""}
+function closeSheet(id){const s=$("#"+id);if(s.hidden)return;hideSheet(id);if(_hs>0){_hs--;_skip++;try{history.back()}catch(_){_skip--}}}
+/* botão voltar do telemóvel fecha a janela aberta em vez de sair da app; não apaga o que estás a escrever no perfil */
+addEventListener("popstate",()=>{if(_skip>0){_skip--;return}const id=!$("#sheet2").hidden?"sheet2":(!$("#sheet").hidden?"sheet":null);if(!id)return;if(id==="sheet"&&D){try{history.pushState({sh:id},"")}catch(_){}toast("Tens alterações por guardar. Usa o X para sair.");return}hideSheet(id);if(_hs>0)_hs--}); 
+/* teclado nunca tapa a caixa de texto */
+document.addEventListener("focusin",e=>{const t=e.target;if(t&&t.matches&&t.matches("input,textarea,select"))setTimeout(()=>{try{t.scrollIntoView({block:"center",behavior:"smooth"})}catch(_){}},320)});
 const head=(t,id)=>`<div class="head"><h1 style="font-size:22px;margin:0">${t}</h1><button class="icon-btn" data-act="close" data-id="${id}" aria-label="Fechar">${ic("x",20)}</button></div>`;
 
 function openProfile(id){const p=S.profiles[id];if(!p)return;const me=meP();const sh=me?sharedWith(me,p):[];const m=mutual(id);const mineRec=!!S.recsMine[id];
@@ -695,6 +702,8 @@ async function ensureInst(){if(E.instId)return E.instId;const nm=E.instName.trim
   for(const [id,i] of Object.entries(S.insts))if(norm(i.name)===norm(nm)&&norm(i.concelho)===norm(cc))return id;
   const id="i"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);const doc={name:nm,concelho:cc,by:S.uid,at:Date.now()};S.insts[id]=doc;await S.db.doc("institutions/"+id).set(doc);return id}
 document.addEventListener("click",async e=>{const el=e.target.closest("[data-act]");if(!el||el.tagName==="INPUT"||el.tagName==="SELECT")return;
+  /* toque duplo: ignora o segundo toque no mesmo botão */
+  if(el.dataset.act!=="tab"){if(el.dataset.busy)return;el.dataset.busy="1";setTimeout(()=>{delete el.dataset.busy},800)}
   const a=el.dataset.act,d=el.dataset;
   if(el.tagName==="BUTTON"||el.tagName==="A")e.preventDefault();
   if(a==="tab"){S.tab=d.k;S.inst=null;render()}

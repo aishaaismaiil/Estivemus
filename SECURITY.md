@@ -10,6 +10,7 @@
 - Ativar CAPTCHA (Cloudflare Turnstile, grátis) contra contas falsas.
 - Em URL Configuration, colocar só o endereço real do site em Site URL e Redirect URLs.
 - Rever limites de envio de emails e tentativas.
+- Ativar "Leaked password protection" (o Supabase avisa que está desligado; pode exigir plano pago).
 
 ## 3. Limitações conhecidas
 - O nome completo vai no perfil e a abreviatura é feita na app: um utilizador com conta e conhecimentos técnicos pode ler nomes completos pela API. Solução futura: guardar o nome completo à parte (como o contacto) e só mostrar abreviado.

@@ -40,6 +40,8 @@ a:hover{color:var(--brick)}
 .hero h1 em{color:var(--brick)}
 .hero p.lead{font-size:1.2rem;max-width:34em;color:var(--ink2);margin:0 0 28px}
 .cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.txtlink{font-weight:700;color:var(--ink);text-underline-offset:5px;padding:12px 4px}
+.txtlink:hover{color:var(--brick)}
 .fine{font-size:14px;color:var(--ink2);margin-top:16px}
 @media(max-width:860px){.hero{grid-template-columns:1fr;gap:40px;padding-bottom:56px}}
 
