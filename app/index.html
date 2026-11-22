@@ -2,17 +2,24 @@
 <html lang="pt-PT">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#B5472B">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Estivemus">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <title>Estivemus</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2064%2064%22%3E%3Crect%20width=%2264%22%20height=%2264%22%20rx=%2214%22%20fill=%22%23B5472B%22/%3E%3Cg%20transform='rotate%28-6%2032%2032%29'%3E%3Crect%20x='9'%20y='5'%20width='46'%20height='54'%20rx='4'%20fill='%23FBF6EA'%20stroke='%23FBF6EA'%20stroke-width='3'/%3E%3Crect%20x='15'%20y='11'%20width='34'%20height='30'%20fill='%23CFA77B'/%3E%3Ccircle%20cx='22'%20cy='27'%20r='5'%20fill='%233B2A20'/%3E%3Ccircle%20cx='32'%20cy='24'%20r='5.5'%20fill='%23B5472B'/%3E%3Ccircle%20cx='42'%20cy='27'%20r='5'%20fill='%233B2A20'/%3E%3Crect%20x='17'%20y='48'%20width='30'%20height='4'%20rx='2'%20fill='%233B2A20'%20opacity='.75'/%3E%3C/g%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,700;1,500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F7F2EA;--card:#fff;--ink:#16202A;--mut:#667085;--line:#E8DFD1;--soft:#F1E7D8;--brand:#E2512D;--brand2:#F28A4B;--teal:#0F6B6B;--tealsoft:#DCEFEC;--ok:#1E8E5A;--warn:#B7791F;--r:18px;--sh:0 8px 24px rgba(22,32,42,.08)}
+:root{--bg:#F3E9D7;--card:#FBF6EA;--ink:#3B2A20;--mut:#6B5546;--line:#DCCDB3;--soft:#EADBC2;--brand:#B5472B;--brand2:#B5472B;--teal:#3B2A20;--tealsoft:#EFE0C2;--ok:#1E8E5A;--warn:#B7791F;--r:18px;--sh:0 8px 24px rgba(22,32,42,.08)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:#EFE8DC}
-body{font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);font-size:15px}
+html,body{margin:0;background:#E6D8BF}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);font-size:15px}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
 :focus-visible{outline:3px solid var(--teal);outline-offset:2px}
@@ -103,6 +110,7 @@ nav#nav button.on{color:var(--brand)}
 .small{font-size:12px;color:var(--mut)}
 a{color:var(--brand)}
 
+@media(display-mode:standalone){#top{padding-top:calc(14px + env(safe-area-inset-top))}.au-art{padding-top:calc(28px + env(safe-area-inset-top))}}
 /* ---- login ---- */
 .au [hidden]{display:none!important}
 .au{position:fixed;inset:0;z-index:99;background:var(--bg);display:grid;grid-template-columns:1fr;overflow:auto}
@@ -197,7 +205,7 @@ let LANG="pt";
 try{const s=localStorage.getItem("reenc_lang");if(s&&LANGS[s])LANG=s;else{const n=(navigator.language||"pt").slice(0,2);if(LANGS[n])LANG=n}}catch(_){}
 const DICT={
 "Sugestões":["Suggestions","Sugerencias"],"Procurar":["Search","Buscar"],"Turmas":["Classes","Clases"],"Alertas":["Alerts","Alertas"],"Perfil":["Profile","Perfil"],
-"Idioma":["Language","Idioma"],"Convidar colegas":["Invite classmates","Invitar a compañeros"],
+"Idioma":["Language","Idioma"],"Descarregar os meus dados":["Download my data","Descargar mis datos"],"Política de privacidade":["Privacy policy","Política de privacidad"],"Termos":["Terms","Términos"],"Sobre o Estivemus":["About Estivemus","Sobre Estivemus"],"Ficheiro descarregado.":["File downloaded.","Archivo descargado."],"Convidar colegas":["Invite classmates","Invitar a compañeros"],
 "Quase lá":["Almost there","Casi listo"],"A carregar…":["Loading…","Cargando…"],
 "Está a demorar. Verifica a ligação; os dados podem estar desatualizados.":["This is taking a while. Check your connection; the data may be out of date.","Está tardando. Comprueba tu conexión; los datos pueden estar desactualizados."],
 "Abre esta app no claude.ai com a tua conta para guardar e partilhar dados.":["Open this app on claude.ai with your account to save and share data.","Abre esta app en claude.ai con tu cuenta para guardar y compartir datos."],
@@ -590,11 +598,17 @@ function viewMe(){const p=meP();const t=(k,l,d)=>`<div class="tog"><div><b>${l}<
   <h2>Onde estiveste</h2>${(p.history||[]).map(e=>`<div class="card row">${eraThumb(e)||`<div class="av" style="background:var(--teal)">${ic("school",22)}</div>`}<div class="grow"><h3>${esc(instName(e.instId))}</h3><div class="mut">${fmtYears(e)} · ${esc(levelsText(e))}${e.cls?" · turma "+esc(e.cls):""}</div></div></div>`).join("")||'<p class="mut">Ainda sem instituições.</p>'}
   <h2>Privacidade</h2><div class="card">${t("hidden","Aparecer nas procuras e sugestões","Se desligares, ninguém te encontra.")}${t("showSurname","Mostrar o meu nome completo","Por defeito só aparece o primeiro nome e a inicial do apelido.")}${t("tags","Permitir marcações em fotos","Cada marcação precisa da tua aprovação.")}</div>
   <button class="btn ghost full" data-act="invite">${ic("copy",18)} Convidar colegas</button>
-  ${S.sb?`<button class="btn ghost full" data-act="logout" style="margin-bottom:10px">Terminar sessão</button>`:""}<button class="btn danger full" data-act="delacc">${ic("trash",18)} Apagar a minha conta</button>`}
+  ${S.sb?`<button class="btn ghost full" data-act="logout" style="margin-bottom:10px">Terminar sessão</button>`:""}<button class="btn ghost full" data-act="export">${ic("copy",18)} Descarregar os meus dados</button><button class="btn danger full" data-act="delacc">${ic("trash",18)} Apagar a minha conta</button><p class="small" style="text-align:center;margin-top:18px"><a href="../privacidade.html" target="_blank" rel="noopener">Política de privacidade</a> · <a href="../termos.html" target="_blank" rel="noopener">Termos</a></p>`}
 
 /* ---------- sheets ---------- */
-function openSheet(id,html){const s=$("#"+id);s.innerHTML=`<div class="panel" role="dialog" aria-modal="true">${html}</div>`;s.hidden=false}
-function closeSheet(id){const s=$("#"+id);s.hidden=true;s.innerHTML=""}
+let _hs=0,_skip=0;
+function openSheet(id,html){const s=$("#"+id);const was=s.hidden;s.innerHTML=`<div class="panel" role="dialog" aria-modal="true">${html}</div>`;s.hidden=false;if(was){try{history.pushState({sh:id},"");_hs++}catch(_){}}}
+function hideSheet(id){const s=$("#"+id);s.hidden=true;s.innerHTML=""}
+function closeSheet(id){const s=$("#"+id);if(s.hidden)return;hideSheet(id);if(_hs>0){_hs--;_skip++;try{history.back()}catch(_){_skip--}}}
+/* botão voltar do telemóvel fecha a janela aberta em vez de sair da app; não apaga o que estás a escrever no perfil */
+addEventListener("popstate",()=>{if(_skip>0){_skip--;return}const id=!$("#sheet2").hidden?"sheet2":(!$("#sheet").hidden?"sheet":null);if(!id)return;if(id==="sheet"&&D){try{history.pushState({sh:id},"")}catch(_){}toast("Tens alterações por guardar. Usa o X para sair.");return}hideSheet(id);if(_hs>0)_hs--}); 
+/* teclado nunca tapa a caixa de texto */
+document.addEventListener("focusin",e=>{const t=e.target;if(t&&t.matches&&t.matches("input,textarea,select"))setTimeout(()=>{try{t.scrollIntoView({block:"center",behavior:"smooth"})}catch(_){}},320)});
 const head=(t,id)=>`<div class="head"><h1 style="font-size:22px;margin:0">${t}</h1><button class="icon-btn" data-act="close" data-id="${id}" aria-label="Fechar">${ic("x",20)}</button></div>`;
 
 function openProfile(id){const p=S.profiles[id];if(!p)return;const me=meP();const sh=me?sharedWith(me,p):[];const m=mutual(id);const mineRec=!!S.recsMine[id];
@@ -685,12 +699,15 @@ async function ensureInst(){if(E.instId)return E.instId;const nm=E.instName.trim
   for(const [id,i] of Object.entries(S.insts))if(norm(i.name)===norm(nm)&&norm(i.concelho)===norm(cc))return id;
   const id="i"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);const doc={name:nm,concelho:cc,by:S.uid,at:Date.now()};S.insts[id]=doc;await S.db.doc("institutions/"+id).set(doc);return id}
 document.addEventListener("click",async e=>{const el=e.target.closest("[data-act]");if(!el||el.tagName==="INPUT"||el.tagName==="SELECT")return;
+  /* toque duplo: ignora o segundo toque no mesmo botão */
+  if(el.dataset.act!=="tab"){if(el.dataset.busy)return;el.dataset.busy="1";setTimeout(()=>{delete el.dataset.busy},800)}
   const a=el.dataset.act,d=el.dataset;
   if(el.tagName==="BUTTON"||el.tagName==="A")e.preventDefault();
   if(a==="tab"){S.tab=d.k;S.inst=null;render()}
   else if(a==="lang"){openSheet("sheet",`${head("Idioma","sheet")}${Object.keys(LANGS).map(k=>`<button class="opt ${k===LANG?"on":""}" data-act="setlang" data-k="${k}"><span>${LANGS[k].n}</span>${k===LANG?ic("check",18):""}</button>`).join("")}`)}
   else if(a==="setlang"){setLang(d.k);closeSheet("sheet");render()}
-  else if(a==="invite"){try{await navigator.clipboard.writeText(location.href);toast("Endereço copiado. Envia aos teus colegas (precisam de acesso à app).")}catch(_){toast("Copia o endereço da barra do navegador e envia aos colegas.")}}
+  else if(a==="invite"){const url=S.sb?location.href.replace(/app\/?(index\.html)?([?#].*)?$/,""):location.href;const txt="Estou no Estivemus, para reencontrar antigos colegas de escola. Cria conta e vê quem também esteve lá:";
+    try{if(navigator.share){await navigator.share({title:"Estivemus",text:txt,url});return}await navigator.clipboard.writeText(url);toast("Endereço copiado. Envia aos teus ex-colegas.")}catch(e){if(e&&e.name==="AbortError")return;toast("Copia o endereço da barra do navegador e envia aos teus ex-colegas.")}}
   else if(a==="editprofile"){if(!S.canWrite){toast("Precisas de acesso de Contribuidor para criar perfil.");return}editProfile()}
   else if(a==="close"){closeSheet(d.id);if(d.id==="sheet")D=null}
   else if(a==="open"){openProfile(d.id)}
@@ -710,11 +727,14 @@ document.addEventListener("click",async e=>{const el=e.target.closest("[data-act
   else if(a==="tagok"||a==="tagno"){const ph=S.photos[d.id];if(!ph)return;
     if(a==="tagok"){ph.tags[d.t].status="ok";qw("ph"+d.id,()=>S.db.doc("photos/"+d.id).update({tags:{[d.t]:{status:"ok"}}}))}
     else{delete ph.tags[d.t];const c=JSON.parse(JSON.stringify(ph));qw("ph"+d.id,()=>S.db.doc("photos/"+d.id).set(c))}render()}
+  else if(a==="export"){const me=meP();if(!me)return;const out={exportadoEm:new Date().toISOString(),email:(S.meInfo&&S.meInfo.email)||null,perfil:me,instituicoes:(me.history||[]).map(h=>Object.assign({nome:instName(h.instId)},h)),reconhecimentos:Object.keys(S.recsMine||{}),preferencias:S.my,fotosQueCarreguei:Object.entries(S.photos).filter(([k,ph])=>ph.by===S.uid).map(([id,ph])=>Object.assign({id},ph)),marcacoesDeMim:Object.entries(S.photos).flatMap(([k,ph])=>Object.entries(ph.tags||{}).filter(([t,x])=>x.uid===S.uid).map(([t,x])=>({foto:k,marcacao:x})))};
+    const b=new Blob([JSON.stringify(out,null,2)],{type:"application/json"});const u=URL.createObjectURL(b);const l=document.createElement("a");l.href=u;l.download="estivemus-os-meus-dados.json";document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),3000);toast("Ficheiro descarregado.")}
   else if(a==="logout"){await S.sb.auth.signOut();location.reload()}
-  else if(a==="delacc"){openSheet("sheet",`${head("Apagar conta","sheet")}<p>Vamos apagar o teu perfil, as tuas fotos e os teus reconhecimentos. Não dá para desfazer.</p><button class="btn danger full" data-act="delaccgo">Apagar tudo</button><button class="btn ghost full" data-act="close" data-id="sheet">Cancelar</button>`)}
+  else if(a==="delacc"){openSheet("sheet",`${head("Apagar conta","sheet")}<p>Vamos apagar o teu perfil, as tuas fotos, os teus reconhecimentos e também o teu email de login. Não dá para desfazer.</p><button class="btn danger full" data-act="delaccgo">Apagar tudo</button><button class="btn ghost full" data-act="close" data-id="sheet">Cancelar</button>`)}
   else if(a==="delaccgo"){const db=S.db,uid=S.uid;
     await qw("del",async()=>{for(const [k,ph] of Object.entries(S.photos)){if(ph.by===uid)await db.doc("photos/"+k).delete();else if(Object.values(ph.tags||{}).some(t=>t.uid===uid)){const c=JSON.parse(JSON.stringify(ph));for(const t of Object.keys(c.tags))if(c.tags[t].uid===uid)delete c.tags[t];await db.doc("photos/"+k).set(c)}}
       await db.doc("recs/"+uid).delete();await db.doc("data/users/"+uid+"/state").delete();await db.doc("profiles/"+uid).delete()});
+    if(S.sb){try{const r=await S.sb.rpc("delete_my_account");if(r.error)throw r.error;await S.sb.auth.signOut({scope:"local"});location.reload();return}catch(_){toast("Os teus dados foram apagados. Para eliminar também o email de login, escreve-nos (ver Política de privacidade).")}}
     delete S.profiles[uid];S.recsMine={};closeSheet("sheet");S.tab="home";toast("Conta apagada.");render()}
   /* profile editor */
   else if(a==="addentry"){openEntry(-1)}
@@ -807,11 +827,12 @@ function loginScreen(sb){return new Promise(res=>{
    <div id="au_nw"><label class="l" for="au_n">O teu nome</label><input id="au_n" type="text" autocomplete="given-name" placeholder="Ex.: Marta"></div>
    <label class="l" for="au_e">Email</label><input id="au_e" type="email" autocomplete="email" inputmode="email" placeholder="o.teu@email.pt">
    <label class="l" for="au_p">Palavra-passe <span class="small" id="au_ph"></span></label><div class="au-pw"><input id="au_p" type="password"><button type="button" id="au_sh">Mostrar</button></div>
-   <label class="au-chk" id="au_cw"><input type="checkbox" id="au_c"><span>Tenho 18 anos ou mais e aceito as condições de utilização.</span></label>
+   <label class="au-chk" id="au_cw"><input type="checkbox" id="au_c"><span>Tenho 18 anos ou mais e aceito os <a href="../termos.html" target="_blank" rel="noopener">termos</a> e a <a href="../privacidade.html" target="_blank" rel="noopener">política de privacidade</a>.</span></label>
    <div id="au_m" aria-live="polite"></div>
    <button class="btn au-go" id="au_go" type="submit"></button>
    <a href="#" class="au-link" id="au_fg" hidden>Esqueci-me da palavra-passe</a>
-  </form></div></section>`;
+  </form>
+  <p class="small" style="text-align:center;margin-top:20px"><a href="../privacidade.html" target="_blank" rel="noopener">Privacidade</a> · <a href="../termos.html" target="_blank" rel="noopener">Termos</a> · <a href="../">Sobre o Estivemus</a></p></div></section>`;
   document.body.appendChild(o);const $o=q=>o.querySelector(q);
   const msg=(t,ok)=>$o("#au_m").innerHTML=t?`<div class="${ok?"ok":"err"}">${t}</div>`:"";
   const setMode=m=>{mode=m;const up=m==="up";
@@ -820,16 +841,16 @@ function loginScreen(sb){return new Promise(res=>{
     $o("#au_s").textContent=up?"Demora menos de um minuto.":"Entra para ver as tuas sugestões.";
     $o("#au_nw").hidden=!up;$o("#au_cw").hidden=!up;$o("#au_fg").hidden=up;
     $o("#au_go").textContent=up?"Criar conta":"Entrar";
-    $o("#au_p").autocomplete=up?"new-password":"current-password";$o("#au_ph").textContent=up?"(mínimo 6 caracteres)":"";msg("")};
+    $o("#au_p").autocomplete=up?"new-password":"current-password";$o("#au_ph").textContent=up?"(mínimo 8 caracteres)":"";msg("")};
   const tr=e=>{const t=e&&e.message||"";
     if(/Invalid login/i.test(t))return "Email ou palavra-passe errados.";
     if(/already registered|already been registered/i.test(t)){setMode("in");return "Este email já tem conta. Entra com a tua palavra-passe."}
     if(/not confirmed/i.test(t))return "Falta confirmares o email. Abre a mensagem que te enviámos.";
     if(/rate limit|too many/i.test(t))return "Demasiadas tentativas. Espera uns minutos e tenta de novo.";
-    if(/Password should/i.test(t))return "A palavra-passe precisa de pelo menos 6 caracteres.";
+    if(/Password should/i.test(t))return "A palavra-passe é demasiado fraca. Usa pelo menos 8 caracteres.";
     if(/valid email|invalid format|Unable to validate/i.test(t))return "Esse email não parece válido.";
     if(/network|fetch/i.test(t))return "Sem ligação. Verifica a internet e tenta de novo.";
-    return "Não foi possível continuar: "+t};
+    return "Não foi possível continuar: "+esc(t)};
   $o("#au_tu").onclick=()=>setMode("up");$o("#au_ti").onclick=()=>setMode("in");
   $o("#au_sh").onclick=()=>{const p=$o("#au_p"),h=p.type==="password";p.type=h?"text":"password";$o("#au_sh").textContent=h?"Esconder":"Mostrar"};
   $o("#au_fg").onclick=async e=>{e.preventDefault();const email=$o("#au_e").value.trim();if(!email)return msg("Escreve o teu email em cima e volta a carregar aqui.");
@@ -838,7 +859,7 @@ function loginScreen(sb){return new Promise(res=>{
     const name=$o("#au_n").value.trim(),email=$o("#au_e").value.trim(),password=$o("#au_p").value;
     if(up&&name.length<2)return msg("Escreve o teu nome.");
     if(!/^\S+@\S+\.\S+$/.test(email))return msg("Escreve um email válido.");
-    if(password.length<6)return msg("A palavra-passe precisa de pelo menos 6 caracteres.");
+    if(password.length<8)return msg("A palavra-passe precisa de pelo menos 8 caracteres.");
     if(up&&!$o("#au_c").checked)return msg("Confirma que tens 18 anos ou mais e aceita as condições.");
     const b=$o("#au_go");b.disabled=true;b.textContent="A processar…";msg("");
     try{const r=up?await sb.auth.signUp({email,password,options:{data:{name}}}):await sb.auth.signInWithPassword({email,password});
@@ -858,6 +879,7 @@ function loginScreen(sb){return new Promise(res=>{
     S.uid=await user.id();try{S.meInfo=await user.me()}catch(_){}
     try{const c=await user.can("data.write");S.canWrite=c!==false}catch(_){}
   }else{
+    try{const m=document.createElement("meta");m.httpEquiv="Content-Security-Policy";m.content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' "+SUPA_URL+"; object-src 'none'; base-uri 'self'; form-action 'self'";document.head.appendChild(m)}catch(_){}
     let sb;try{await loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2");sb=window.supabase.createClient(SUPA_URL,SUPA_KEY)}catch(_){clearTimeout(timer);S.fatal="Não foi possível ligar ao servidor. Verifica a ligação e recarrega.";render();return}
     let ses=(await sb.auth.getSession()).data.session;if(!ses)ses=await loginScreen(sb);
     S.uid=ses.user.id;S.meInfo={name:(ses.user.user_metadata&&ses.user.user_metadata.name)||"",email:ses.user.email};S.db=db=makeSupaDb(sb,S.uid);S.sb=sb;
