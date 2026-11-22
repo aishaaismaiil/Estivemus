@@ -16,7 +16,6 @@
 - O nome completo vai no perfil e a abreviatura é feita na app: um utilizador com conta e conhecimentos técnicos pode ler nomes completos pela API. Solução futura: guardar o nome completo à parte (como o contacto) e só mostrar abreviado.
 - Fotos em base64 dentro da base de dados (máx. ~240 KB por foto): passar para Supabase Storage quando houver muitos utilizadores.
 - A biblioteca do Supabase vem de jsDelivr sem SRI; fixar a versão e acrescentar `integrity`.
-- Google Fonts na app: substituir por fontes alojadas no repositório.
 - Dono da foto pode editar tudo nela, incluindo aprovar marcações sem passar pela pessoa marcada (a app não o faz).
 - As denúncias ficam na base de dados (coleção `reports/...`); não há painel, vê-las no Table Editor.
 

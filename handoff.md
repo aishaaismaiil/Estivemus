@@ -25,12 +25,14 @@ App e site para reencontrar antigos colegas de creche, escola e universidade (po
 
 ## O que não resultou / limites
 - Sem rede: não testei o link nem o SQL; WebFetch foi recusado. Sem Postgres local para validar o SQL.
-- Fontes: não consegui alojar Google Fonts localmente (sem download).
 - Nome completo continua legível via API por utilizadores com conta (ver `SECURITY.md`).
+
+- App alinhada com o style guide do site (castanho/creme/tijolo, sem gradiente) e sem Google Fonts.
 
 ## Próximos passos
 1. Correr `docs.sql` e `security.sql` no Supabase e fazer os 4 testes com 2-3 contas.
 2. Preencher `[NOME]`, `[EMAIL]`, região Supabase, prazos; apagar avisos "Rascunho".
 3. Ativar CAPTCHA e confirmação de email no Supabase.
 4. Fazer push, confirmar o link público, depois publicar o comentário do TikTok com "link na bio".
-5. Alojar fontes localmente; mover nome completo para fora do perfil público.
+5. Mover nome completo para fora do perfil público.
+6. Notificações: ainda não existem (sem servidor de push). Só pedir permissão depois do 1.º reconhecimento, quando houver push ou emails de aviso.
