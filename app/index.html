@@ -293,7 +293,7 @@ const DICT={
 "Também reconheço":["I remember them too","Yo también lo recuerdo"],"Agora não":["Not now","Ahora no"],"Aprovar":["Approve","Aprobar"],"Recusar":["Decline","Rechazar"],
 "Contacto disponível":["Contact available","Contacto disponible"],"Ainda sem contacto partilhado":["No contact shared yet","Aún sin contacto compartido"],
 "Novos nas tuas turmas":["New in your classes","Nuevos en tus clases"],"Entrou":["Joined","Se unió"],"Alguém":["Someone","Alguien"],
-"Ainda sem instituições.":["No institutions yet.","Aún sin instituciones."],"Privacidade":["Privacy","Privacidad"],
+"Ainda sem instituições.":["No institutions yet.","Aún sin instituciones."],"Privacidade":["Privacy","Privacidad"],"Explorar outras turmas":["Explore other classes","Explorar otras clases"],"Turmas criadas por outras pessoas. Toca numa para ver quem lá esteve.":["Classes created by other people. Tap one to see who was there.","Clases creadas por otras personas. Toca una para ver quién estuvo."],"Procurar escola, creche ou universidade":["Search school, nursery or university","Buscar escuela, guardería o universidad"],"Nenhuma turma encontrada.":["No class found.","Ninguna clase encontrada."],
 "Aparecer nas procuras e sugestões":["Appear in searches and suggestions","Aparecer en búsquedas y sugerencias"],"Se desligares, ninguém te encontra.":["If you turn this off, nobody can find you.","Si lo desactivas, nadie te encuentra."],
 "Mostrar o meu nome completo":["Show my full name","Mostrar mi nombre completo"],"Por defeito só aparece o primeiro nome e a inicial do apelido.":["By default only the first name and the initial of the surname show.","Por defecto solo aparece el nombre y la inicial del apellido."],
 "Permitir marcações em fotos":["Allow photo tags","Permitir etiquetas en fotos"],"Cada marcação precisa da tua aprovação.":["Every tag needs your approval.","Cada etiqueta necesita tu aprobación."],
@@ -562,10 +562,17 @@ function peopleAt(instId){const me=meP();const mine=myInsts()[instId]||[];const 
     for(const a of mine)for(const b of(p.history||[])){const n=overlap(a,b);if(n>0&&(!best||n>best.n))best={n,from:Math.max(a.from,b.from),to:Math.min(a.to,b.to),cls:b.cls}}
     if(best)out.push({id,p,best})}
   return out.sort((a,b)=>b.best.n-a.best.n)}
+function exploreHTML(q){const mine=myInsts();const cnt={};
+  for(const [id,p] of Object.entries(S.profiles)){if(id===S.uid||(p.privacy&&p.privacy.hidden)||isBlocked(id))continue;for(const iid of new Set((p.history||[]).map(e=>e.instId)))cnt[iid]=(cnt[iid]||0)+1}
+  const norm=t=>String(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");const nq=norm(q);
+  const L=Object.keys(S.insts).filter(id=>!mine[id]&&(!nq||norm(instName(id)).includes(nq))).sort((a,b)=>(cnt[b]||0)-(cnt[a]||0)||instName(a).localeCompare(instName(b))).slice(0,40);
+  if(!L.length)return `<p class="mut">${nq?"Nenhuma turma encontrada.":"Ainda não há outras instituições. Convida colegas para criarem a deles."}</p>`;
+  return L.map(id=>{const n=cnt[id]||0;return `<button class="card row" style="width:100%;text-align:left" data-act="explore" data-id="${esc(id)}"><div class="av" style="background:#D9A441">${ic("school",24)}</div><div class="grow"><h3>${esc(instName(id))}</h3></div><span class="pill">${n} ${n===1?"pessoa":"pessoas"}</span></button>`}).join("")}
 function viewClasses(){const m=myInsts();const ids=Object.keys(m);
-  if(!ids.length)return `<h1>Turmas</h1><div class="empty">${ic("school",44)}<p>Adiciona as tuas escolas no perfil para veres as turmas, fotos e reencontros.</p><button class="btn" data-act="editprofile">Editar perfil</button></div>`;
-  return `<h1>As tuas turmas</h1><p class="mut">Pessoas, fotos antigas e reencontros de cada sítio onde estiveste.</p>`+ids.map(id=>{const es=m[id];const n=peopleAt(id).length;
-    return `<button class="card row" style="width:100%;text-align:left" data-act="inst" data-id="${esc(id)}"><div class="av" style="background:var(--teal)">${ic("school",24)}</div><div class="grow"><h3>${esc(instName(id))}</h3><div class="mut">${es.map(fmtYears).join(" · ")}</div></div><span class="pill teal">${n} ${n===1?"pessoa":"pessoas"}</span></button>`}).join("")}
+  const mineH=ids.length?`<h1>As tuas turmas</h1><p class="mut">Pessoas, fotos antigas e reencontros de cada sítio onde estiveste.</p>`+ids.map(id=>{const es=m[id];const n=peopleAt(id).length;
+    return `<button class="card row" style="width:100%;text-align:left" data-act="inst" data-id="${esc(id)}"><div class="av" style="background:var(--teal)">${ic("school",24)}</div><div class="grow"><h3>${esc(instName(id))}</h3><div class="mut">${es.map(fmtYears).join(" · ")}</div></div><span class="pill teal">${n} ${n===1?"pessoa":"pessoas"}</span></button>`}).join(""):
+    `<h1>Turmas</h1><div class="empty">${ic("school",44)}<p>Adiciona as tuas escolas no perfil para veres as turmas, fotos e reencontros.</p><button class="btn" data-act="editprofile">Editar perfil</button></div>`;
+  return mineH+`<h2 style="margin-top:28px">Explorar outras turmas</h2><p class="mut">Turmas criadas por outras pessoas. Toca numa para ver quem lá esteve.</p><input type="text" data-xq placeholder="Procurar escola, creche ou universidade" value="${esc(S.xq||"")}" aria-label="Procurar turma"><div id="xl" style="margin-top:10px">${exploreHTML(S.xq)}</div>`}
 function myYearsAt(instId){const ys=new Set();for(const e of(myInsts()[instId]||[]))for(let y=e.from;y<=e.to;y++)ys.add(y);return[...ys].sort((a,b)=>b-a)}
 function viewInst(){const id=S.inst;const t=S.instTab;let body="";
   if(t==="people"){const L=peopleAt(id);body=L.length?L.map(r=>`<button class="card row" style="width:100%;text-align:left;margin:8px 0" data-act="open" data-id="${esc(r.id)}">${avatar(r.p,r.id)}<div class="grow"><h3>${esc(displayName(r.p))}</h3><div class="mut">${r.best.from===r.best.to?r.best.from:r.best.from+"–"+r.best.to}${r.best.cls?" · turma "+esc(r.best.cls):""}</div></div>${mutual(r.id)?'<span class="pill ok">Ligados</span>':S.recsMine[r.id]?'<span class="pill wait">Pendente</span>':""}</button>`).join(""):`<div class="empty">${ic("users",44)}<p>Ainda ninguém desta turma. Convida colegas.</p><button class="btn" data-act="invite">${ic("copy",18)} Copiar convite</button></div>`}
@@ -691,7 +698,7 @@ function openAddEvent(){openSheet("sheet",`${head("Organizar reencontro","sheet"
   <button class="btn full" data-act="saveevent">Criar e convidar a turma</button>`)}
 
 /* ---------- actions ---------- */
-document.addEventListener("input",e=>{const k=e.target.dataset&&e.target.dataset.in;if(!k)return;S.f[k]=e.target.value;const r=$("#res");if(r)r.innerHTML=resultsHTML()});
+document.addEventListener("input",e=>{if(e.target.dataset&&"xq" in e.target.dataset){S.xq=e.target.value;const x=$("#xl");if(x)x.innerHTML=exploreHTML(S.xq);return}const k=e.target.dataset&&e.target.dataset.in;if(!k)return;S.f[k]=e.target.value;const r=$("#res");if(r)r.innerHTML=resultsHTML()});
 document.addEventListener("change",e=>{const t=e.target;if(t.dataset&&t.dataset.in){S.f[t.dataset.in]=t.value;const r=$("#res");if(r)r.innerHTML=resultsHTML()}
   if(t.dataset&&t.dataset.act==="priv"){const p=JSON.parse(JSON.stringify(meP()));p.privacy=p.privacy||{};const k=t.dataset.k;if(k==="hidden")p.privacy.hidden=!t.checked;else p.privacy[k]=t.checked;saveProfile(p)}});
 document.addEventListener("keydown",e=>{if(S.tab!=="home"||!$("#topcard")||$("#sheet").hidden===false)return;if(e.key==="ArrowRight")swipe("yes");if(e.key==="ArrowLeft")swipe("no")});
@@ -718,6 +725,7 @@ document.addEventListener("click",async e=>{const el=e.target.closest("[data-act
   else if(a==="dismiss"){S.my.dismiss=Object.assign({},S.my.dismiss,{[d.id]:Date.now()});saveMy();render()}
   else if(a==="block"){S.my.blocks=Object.assign({},S.my.blocks,{[d.id]:Date.now()});saveMy();closeSheet("sheet");toast("Bloqueado. Não voltas a vê-lo.");render()}
   else if(a==="report"){qw("rep",()=>S.db.collection("reports/"+S.uid+"/items").add({type:"profile",target:d.id,at:Date.now()}));toast("Denúncia enviada ao dono da app.")}
+  else if(a==="explore"){S.f.inst=d.id;S.f.q="";S.f.year="";S.f.level="";S.f.cls="";S.tab="search";S.inst=null;render()}
   else if(a==="inst"){S.inst=d.id;S.instTab="people";render()}
   else if(a==="instback"){S.inst=null;render()}
   else if(a==="itab"){S.instTab=d.k;render()}
@@ -843,10 +851,13 @@ function loginScreen(sb){return new Promise(res=>{
     $o("#au_nw").hidden=!up;$o("#au_cw").hidden=!up;$o("#au_fg").hidden=up;
     $o("#au_go").textContent=up?"Criar conta":"Entrar";
     $o("#au_p").autocomplete=up?"new-password":"current-password";$o("#au_ph").textContent=up?"(mínimo 8 caracteres)":"";msg("")};
+  const bindResend=email=>{const a=$o("#au_rs");if(!a)return;a.onclick=async ev=>{ev.preventDefault();if(a.dataset.busy)return;a.dataset.busy="1";a.textContent="A enviar…";
+      try{const r=await sb.auth.resend({type:"signup",email});a.textContent=r.error?"Não foi possível reenviar. Espera uns minutos.":"Reenviado. Espera uns minutos."}catch(x){a.textContent="Sem ligação. Tenta de novo."}
+      setTimeout(()=>{a.textContent="Não chegou? Reenviar";delete a.dataset.busy},60000)}};
   const tr=e=>{const t=e&&e.message||"";
     if(/Invalid login/i.test(t))return "Email ou palavra-passe errados.";
     if(/already registered|already been registered/i.test(t)){setMode("in");return "Este email já tem conta. Entra com a tua palavra-passe."}
-    if(/not confirmed/i.test(t))return "Falta confirmares o email. Abre a mensagem que te enviámos.";
+    if(/not confirmed/i.test(t))return "Falta confirmares o email. Abre a mensagem que te enviámos (vê também o spam, as promoções e o social).";
     if(/rate limit|too many/i.test(t))return "Demasiadas tentativas. Espera uns minutos e tenta de novo.";
     if(/Password should/i.test(t))return "A palavra-passe é demasiado fraca. Usa pelo menos 8 caracteres.";
     if(/valid email|invalid format|Unable to validate/i.test(t))return "Esse email não parece válido.";
@@ -855,7 +866,7 @@ function loginScreen(sb){return new Promise(res=>{
   $o("#au_tu").onclick=()=>setMode("up");$o("#au_ti").onclick=()=>setMode("in");
   $o("#au_sh").onclick=()=>{const p=$o("#au_p"),h=p.type==="password";p.type=h?"text":"password";$o("#au_sh").textContent=h?"Esconder":"Mostrar"};
   $o("#au_fg").onclick=async e=>{e.preventDefault();const email=$o("#au_e").value.trim();if(!email)return msg("Escreve o teu email em cima e volta a carregar aqui.");
-    const r=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});msg(r.error?tr(r.error):"Enviámos-te um email para definires uma nova palavra-passe.",!r.error)};
+    const r=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});msg(r.error?tr(r.error):"Enviámos-te um email para definires uma nova palavra-passe. Se não o vires, procura no <b>spam</b>, nas <b>promoções</b> ou no <b>social</b>.",!r.error)};
   $o("#au_f").onsubmit=async e=>{e.preventDefault();const up=mode==="up";
     const name=$o("#au_n").value.trim(),email=$o("#au_e").value.trim(),password=$o("#au_p").value;
     if(up&&name.length<2)return msg("Escreve o teu nome.");
@@ -865,7 +876,7 @@ function loginScreen(sb){return new Promise(res=>{
     const b=$o("#au_go");b.disabled=true;b.textContent="A processar…";msg("");
     try{const r=up?await sb.auth.signUp({email,password,options:{data:{name}}}):await sb.auth.signInWithPassword({email,password});
       if(r.error){msg(tr(r.error));return}
-      if(!r.data.session){msg("Conta criada! Enviámos um email de confirmação para <b>"+esc(email)+"</b>. Abre-o, confirma e depois entra.",true);setMode("in");$o("#au_e").value=email;return}
+      if(!r.data.session){setMode("in");$o("#au_e").value=email;msg("Conta criada! Enviámos um email de confirmação para <b>"+esc(email)+"</b>. Pode demorar uns minutos e ir parar ao <b>spam</b>, às <b>promoções</b> ou ao <b>social</b>: vê aí também. Depois de confirmares, entra. <a href=\"#\" id=\"au_rs\">Não chegou? Reenviar</a>",true);bindResend(email);return}
       o.remove();res(r.data.session)}
     catch(x){msg(tr(x))}finally{b.disabled=false;b.textContent=mode==="up"?"Criar conta":"Entrar"}};
   setMode("up")})}
