@@ -1,0 +1,32 @@
+{
+  "name": "Estivemus",
+  "short_name": "Estivemus",
+  "description": "Reencontra quem também esteve. Antigos colegas de creche, escola e universidade.",
+  "lang": "pt-PT",
+  "id": "./",
+  "start_url": "app/",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F7F2EA",
+  "theme_color": "#B5472B",
+  "icons": [
+    {
+      "src": "app/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "app/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "app/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

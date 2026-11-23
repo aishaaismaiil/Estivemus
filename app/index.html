@@ -11,7 +11,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Estivemus">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="stylesheet" href="../install.css">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <title>Estivemus</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2064%2064%22%3E%3Crect%20width=%2264%22%20height=%2264%22%20rx=%2214%22%20fill=%22%23B5472B%22/%3E%3Cg%20transform='rotate%28-6%2032%2032%29'%3E%3Crect%20x='9'%20y='5'%20width='46'%20height='54'%20rx='4'%20fill='%23FBF6EA'%20stroke='%23FBF6EA'%20stroke-width='3'/%3E%3Crect%20x='15'%20y='11'%20width='34'%20height='30'%20fill='%23CFA77B'/%3E%3Ccircle%20cx='22'%20cy='27'%20r='5'%20fill='%233B2A20'/%3E%3Ccircle%20cx='32'%20cy='24'%20r='5.5'%20fill='%23B5472B'/%3E%3Ccircle%20cx='42'%20cy='27'%20r='5'%20fill='%233B2A20'/%3E%3Crect%20x='17'%20y='48'%20width='30'%20height='4'%20rx='2'%20fill='%233B2A20'%20opacity='.75'/%3E%3C/g%3E%3C/svg%3E">
@@ -895,5 +896,6 @@ function loginScreen(sb){return new Promise(res=>{
   db.doc("data/users/"+S.uid+"/state").onSnapshot(s=>{const v=s.exists?s.data():{};S.my={no:v.no||{},dismiss:v.dismiss||{},blocks:v.blocks||{}};sched()},onErr);
 })();
 </script>
+<script src="../install.js" defer></script>
 </body>
 </html>
